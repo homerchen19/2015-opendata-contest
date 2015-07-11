@@ -1,0 +1,91 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+  <title>TGOS MAP API (lite) 版範例</title>
+
+  <!--呼叫TGOS MAP API (lite)-->
+  <script type="text/javascript" src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=x+JLVSx85Lk=&APIKey=in8W74q0ogpcfW/STwicK8D5QwCdddJf05/7nb+OtDh8R99YN3T0LurV4xato3TpL/fOfylvJ9Wv/khZEsXEWxsBmg+GEj4AuokiNXCh14Rei21U5GtJpIkO++Mq3AguFK/ISDEWn4hMzqgrkxNe1Q==" charset="utf-8"></script>
+
+  <script type="text/javascript">
+    var messageBox;  //訊息視窗物件  
+    var pMap;   //初始化地圖物件
+    var startPoint;
+    var startMarker;
+
+    //-----------------抓使用者位置---------------------------
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(WGS84toTWD97);
+        } else { 
+            alert("您的瀏覽器不支援讀取現在位置");
+        }
+    }
+
+    function WGS84toTWD97(position) //轉換座標
+    {
+      var Y84 = Number(position.coords.latitude);
+      var X84 = Number(position.coords.longitude);
+      var TT = new TGOS.TGTransformation();
+      TT.wgs84totwd97(X84,Y84);
+      var user_location_X = Number(TT.transResult.x);
+      var user_location_Y = Number(TT.transResult.y);
+
+      startPoint = new TGOS.TGPoint(user_location_X, user_location_Y); //地標坐標位置
+      pMap.setCenter(startPoint);   //初始地圖中心點
+      var infotext = '<B>使用者現在大約位置</B><p>(可自行拖曳至實際位置)</p>';  //地標名稱及訊息視窗內容
+      var imgUrl = "star.gif";  //標記點圖示來源
+
+      //------------------建立標記點---------------------
+      var markerImg = new TGOS.TGImage(imgUrl, new TGOS.TGSize(38, 33), new TGOS.TGPoint(0, 0), new TGOS.TGPoint(10, 33));       //設定標記點圖片及尺寸大小
+      startMarker = new TGOS.TGMarker(pMap, startPoint,'', markerImg); //建立機關單位標記點
+      startMarker.setDraggable(true);
+      
+      //-----------------建立訊息視窗--------------------
+      var InfoWindowOptions = {
+        maxWidth:4000,       //訊息視窗的最大寬度
+        pixelOffset: new TGOS.TGSize(5, -30),         //InfoWindow起始位置的偏移量, 使用TGSize設定, 向右X為正, 向上Y為負 
+        zIndex:99                                //視窗堆疊順序
+      };                                       
+      messageBox = new TGOS.TGInfoWindow(infotext, startPoint, InfoWindowOptions);   // 建立訊息視窗                                                               
+      TGOS.TGEvent.addListener(startMarker, "mouseover", openInfoWindow);   //滑鼠監聽事件--開啟訊息視窗
+      TGOS.TGEvent.addListener(startMarker, "mouseout", closeInfoWindow);     //滑鼠監聽事件--關閉訊息視窗
+    }
+
+    //------------------------------若網頁介面依照範例網頁的預設設定,以下程式碼可不修改---------------------------------------
+    function InitWnd()
+    {
+      //------------------初始化地圖--------------------
+      var pOMap = document.getElementById("OMap");
+      var mapOptiions = {
+        scaleControl: true,  //不顯示比例尺
+        navigationControl: true,   //顯示地圖縮放控制項
+
+        navigationControlOptions: {        //設定地圖縮放控制項
+          controlPosition: TGOS.TGControlPosition.TOP_LEFT,  //控制項位置
+          navigationControlStyle: TGOS.TGNavigationControlStyle.SMALL         //控制項樣式
+        },
+          mapTypeControl: false       //不顯示地圖類型控制項
+      };
+
+      pMap = new TGOS.TGOnlineMap(pOMap, TGOS.TGCoordSys.EPSG3826, mapOptiions);    //建立地圖,選擇TWD97坐標
+      pMap.setZoom(11);                                   //初始地圖縮放層級
+      
+    }
+
+    function openInfoWindow() {      //開啟訊息視窗函式
+      var nowPoint = new TGOS.TGPoint(startMarker.getPosition().x, startMarker.getPosition().y);
+      messageBox.setPosition(nowPoint);
+      messageBox.open(pMap);
+    }
+    function closeInfoWindow() {      //關閉訊息視窗函式
+      messageBox.close();
+    }
+
+  </script>
+</head>
+
+<body style=" background: #000 url(background.jpg) center center fixed no-repeat; -moz-background-size:cover; background-size: 100% 100%;" 
+      onload="InitWnd(); getLocation();" >
+  <div id="OMap" style="position:absolute;width:70%; height:70%; border:3px solid #000000; margin-top:10%; margin-left:20%"></div>
+</html>
