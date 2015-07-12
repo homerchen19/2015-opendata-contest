@@ -8,9 +8,28 @@
 
 #OMap  
 {  
-	height:70%;
-    width:80%; 
+	height:80%;
+    width:60%; 
     border:3px solid #000000; 
     float:left;  
     position:relative;
 } 
+
+#right
+{
+	width:20%;
+	float:left;  
+    position:relative;
+
+}
+
+#search
+{
+	border:3px solid #000000; 
+	background-color:#FF8888;
+	margin-left:10%;
+	width:90%;
+	text-align:center;
+	vertical-align: center;
+	font-size: 23;
+}

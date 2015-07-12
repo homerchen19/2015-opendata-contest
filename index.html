@@ -9,6 +9,7 @@
     }
   </style>
   <link rel="stylesheet" type="text/css" href="index.css" />
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
   <!--呼叫TGOS MAP API (lite)-->
   <script type="text/javascript" src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=x+JLVSx85Lk=&APIKey=in8W74q0ogpcfW/STwicK8D5QwCdddJf05/7nb+OtDh8R99YN3T0LurV4xato3TpL/fOfylvJ9Wv/khZEsXEWxsBmg+GEj4AuokiNXCh14Rei21U5GtJpIkO++Mq3AguFK/ISDEWn4hMzqgrkxNe1Q==" charset="utf-8"></script>
@@ -58,9 +59,9 @@
       TGOS.TGEvent.addListener(startMarker, "mouseout", closeInfoWindow);     //滑鼠監聽事件--關閉訊息視窗
     }
 
+ //------------------初始化地圖--------------------
     function InitWnd()
     {
-      //------------------初始化地圖--------------------
       var pOMap = document.getElementById("OMap");
       var mapOptiions = {
         scaleControl: true,  //不顯示比例尺
@@ -113,5 +114,35 @@
     </div>
 
     <div id="OMap"></div>
+
+    <div id="right">
+      <div id="search">
+        <form class="pure-form pure-form-stacked">
+          <fieldset>
+            <legend><b>搜尋條件</b></legend>
+              <label><b>搜尋半徑</b></label>
+              <input style="height:4%; width:60%; margin: 0px auto;" placeholder="(公尺)">
+              <br>
+              <label><b>運動類型</b></label>
+              <label for="option-one" class="pure-checkbox">
+                  <input id="option-running" type="checkbox"> 跑步
+                  <input id="option-basketball" type="checkbox"> 籃球
+                  <input id="option-badminton" type="checkbox"> 羽球
+              </label>
+              <label for="option-one" class="pure-checkbox">
+                  <input id="option-baseball" type="checkbox"> 棒球
+                  <input id="option-volleyball" type="checkbox"> 排球
+                  <input id="option-tennis" type="checkbox"> 網球
+              </label>
+              <br>
+              <button type="submit" class="pure-button pure-button-primary">搜尋</button>
+          </fieldset>
+            </form>
+          
+      </div>
+
+      <div>
+      </div>
+    </div>
   </div>
 </html>
