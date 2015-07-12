@@ -2,7 +2,13 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-  <title>TGOS MAP API (lite) 版範例</title>
+  <title>台南市運動地圖</title>
+  <style>
+    body{
+      font-family: Arial,"微軟正黑體";
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="index.css" />
 
   <!--呼叫TGOS MAP API (lite)-->
   <script type="text/javascript" src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=x+JLVSx85Lk=&APIKey=in8W74q0ogpcfW/STwicK8D5QwCdddJf05/7nb+OtDh8R99YN3T0LurV4xato3TpL/fOfylvJ9Wv/khZEsXEWxsBmg+GEj4AuokiNXCh14Rei21U5GtJpIkO++Mq3AguFK/ISDEWn4hMzqgrkxNe1Q==" charset="utf-8"></script>
@@ -52,7 +58,6 @@
       TGOS.TGEvent.addListener(startMarker, "mouseout", closeInfoWindow);     //滑鼠監聽事件--關閉訊息視窗
     }
 
-    //------------------------------若網頁介面依照範例網頁的預設設定,以下程式碼可不修改---------------------------------------
     function InitWnd()
     {
       //------------------初始化地圖--------------------
@@ -87,5 +92,26 @@
 
 <body style=" background: #000 url(background.jpg) center center fixed no-repeat; -moz-background-size:cover; background-size: 100% 100%;" 
       onload="InitWnd(); getLocation();" >
-  <div id="OMap" style="position:absolute;width:70%; height:70%; border:3px solid #000000; margin-top:10%; margin-left:20%"></div>
+
+  <div id="container">
+
+    <div id="header" style="width:40%;">
+     <img src="title.jpg" style="width:100%;">
+    </div>
+    </br>
+
+    <div id="buttonZone">
+      <button type="button">Click Me! </button>
+      </br>
+      <button type="button">Click Me! </button>
+      </br>
+      <button type="button">Click Me! </button>
+      </br>
+      <button type="button">Click Me! </button>
+      </br>
+      <button type="button">Click Me! </button>
+    </div>
+
+    <div id="OMap"></div>
+  </div>
 </html>

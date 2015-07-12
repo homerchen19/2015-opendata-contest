@@ -1,0 +1,16 @@
+#buttonZone  
+{  
+	height:50%;
+    width:15%;  
+    float:left;  
+    position:relative;
+}  
+
+#OMap  
+{  
+	height:70%;
+    width:80%; 
+    border:3px solid #000000; 
+    float:left;  
+    position:relative;
+} 
