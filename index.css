@@ -25,11 +25,12 @@
 
 #search
 {
-	border:3px solid #000000; 
 	background-color:#FF8888;
 	margin-left:10%;
 	width:90%;
 	text-align:center;
 	vertical-align: center;
 	font-size: 23;
+	box-shadow:3px 3px 12px black;
+	border-radius: 10px;
 }

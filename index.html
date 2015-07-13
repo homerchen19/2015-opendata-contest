@@ -12,13 +12,16 @@
   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
   <!--呼叫TGOS MAP API (lite)-->
-  <script type="text/javascript" src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=x+JLVSx85Lk=&APIKey=in8W74q0ogpcfW/STwicK8D5QwCdddJf05/7nb+OtDh8R99YN3T0LurV4xato3TpL/fOfylvJ9Wv/khZEsXEWxsBmg+GEj4AuokiNXCh14Rei21U5GtJpIkO++Mq3AguFK/ISDEWn4hMzqgrkxNe1Q==" charset="utf-8"></script>
+  <script type="text/javascript"
+
+src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vqarEeonOSrCS6INc4CouFqgWDNeP0dRWA==&APIKey=cGEErDNy5yN/1fQ0vyTOZrghjE+jIU6uYXA6z8TxlOKEF1JOD1jWmQPvSqmQN7vSxWvYAVFglFaC5LjGQWgYpNs+vP1WMjHudUh56I7iI+rwl6IvbGfYICsd6lCJq4yksLTDUjZdsNwjxiVeovhFYRnI5OBS/8kef12LYT/V2+2B/f9FPqUvFm3mO33PgqX9VS6xe6dzgkV4z1ZDOIR6MdYQvhS1FBcbxLDLMY7ZSERlgz6ZoAYXzvSQZbIt5HA2qouiStcwAz0gpOIj/N8WaxsEmV6qxI70jVEbB7hn/DZEtYJ0tvGB72a8miaxOj8kXDUhU49Z5oAhTeIwWk6y4pcxLytzfy1o" charset="utf-8"></script>
 
   <script type="text/javascript">
     var messageBox;  //訊息視窗物件  
-    var pMap;   //初始化地圖物件
+    var pMap = null;   //初始化地圖物件
     var startPoint;
     var startMarker;
+    var BufferArea = null;
 
     //-----------------抓使用者位置---------------------------
     function getLocation() {
@@ -76,7 +79,6 @@
 
       pMap = new TGOS.TGOnlineMap(pOMap, TGOS.TGCoordSys.EPSG3826, mapOptiions);    //建立地圖,選擇TWD97坐標
       pMap.setZoom(11);                                   //初始地圖縮放層級
-      
     }
 
     function openInfoWindow() {      //開啟訊息視窗函式
@@ -88,6 +90,28 @@
       messageBox.close();
     }
 
+
+//----------------繪製環域圖形-------------------
+    function searchArea() {
+      if(BufferArea)   //假設地圖上已存在環域圖形(TGFill), 則先行移除
+        BufferArea.setMap(null);
+
+      var radius = parseFloat(document.getElementById("BufferDist").value); //取得使用者輸入的環域半徑
+      var pt = new TGOS.TGPoint(startMarker.getPosition().x, startMarker.getPosition().y); //取得現在位置
+      var circle = new TGOS.TGCircle(); //建立一個圓形物件(TGCircle)
+      circle.setCenter(pt);       //位置為圓心
+      circle.setRadius(radius);     //設定半徑
+
+      var pgnOption = {         //設定圖形樣式
+        fillColor: "#0099FF",
+        fillOpacity : 0.1,
+        strokeWeight : 2,
+        strokeColor : "#ff00ff"
+      };
+      BufferArea = new TGOS.TGFill(pMap, circle, pgnOption);  //使用TGFill物件將圓形繪製出來
+      pMap.fitBounds(BufferArea.getBounds());
+      pMap.setZoom(pMap.getZoom()-1);     //取得環域圖形的邊界後, 調整地圖顯示的範圍
+    }
   </script>
 </head>
 
@@ -119,9 +143,9 @@
       <div id="search">
         <form class="pure-form pure-form-stacked">
           <fieldset>
-            <legend><b>搜尋條件</b></legend>
+            <legend style="font-size=125%;"><b>搜尋條件</b></legend>
               <label><b>搜尋半徑</b></label>
-              <input style="height:4%; width:60%; margin: 0px auto;" placeholder="(公尺)">
+              <input id="BufferDist" style="height:4%; width:60%; margin: 0px auto;" placeholder="(公尺)">
               <br>
               <label><b>運動類型</b></label>
               <label for="option-one" class="pure-checkbox">
@@ -135,9 +159,9 @@
                   <input id="option-tennis" type="checkbox"> 網球
               </label>
               <br>
-              <button type="submit" class="pure-button pure-button-primary">搜尋</button>
+              <button onclick="searchArea()" type="button" class="pure-button pure-button-primary">搜尋</button>
           </fieldset>
-            </form>
+        </form>
           
       </div>
 
