@@ -25,6 +25,7 @@
           echo "var icon = new TGOS.TGImage(url, size, new TGOS.TGPoint(0, 0), anchor); "; 
           echo "var marker = new TGOS.TGMarker(pMap, pt, title, icon, markerOptions); ";
           echo "hospital_Markers.push(marker); ";
+          echo "totalMarker.push(marker); ";
 
           echo 'var InfoWindowOptions = {
                       maxWidth:4000, //訊息視窗的最大寬度 
@@ -35,6 +36,7 @@
           echo "var tmpMessageBox = new TGOS.TGInfoWindow(tmpinfotext, marker, InfoWindowOptions); ";//訊息視窗出現位置 
           echo "tmpMessageBox.setPosition(pt); ";
           echo "hospital_MessageBox.push(tmpMessageBox); ";
+          echo "totalMessageBox.push(tmpMessageBox); ";
           
           echo 'TGOS.TGEvent.addListener(hospital_Markers[' . $i . '], "mouseover", function(){
                   for(i = 0; i < 10; i++) {
@@ -43,8 +45,6 @@
                   }
                   hospital_MessageBox[' . $i . '].open(pMap);
                 }); '; //滑鼠監聽事件
-          echo 'TGOS.TGEvent.addListener(hospital_Markers[' . $i . '], "mouseout", function(){
-                  hospital_MessageBox[' . $i . '].close(pMap);
-                }); '; //滑鼠監聽事件
+          
         }
       ?>
