@@ -30,7 +30,19 @@
 	width:90%;
 	text-align:center;
 	vertical-align: center;
-	font-size: 23;
+	font-size: 20;
+	box-shadow:3px 3px 12px black;
+	border-radius: 10px;
+}
+
+#weather
+{
+	background-color:#6495ED;
+	margin-left:10%;
+	width:90%;
+	text-align:center;
+	vertical-align: center;
+	font-size: 20;
 	box-shadow:3px 3px 12px black;
 	border-radius: 10px;
 }

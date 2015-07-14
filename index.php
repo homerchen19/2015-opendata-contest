@@ -11,6 +11,31 @@
   <link rel="stylesheet" type="text/css" href="index.css" />
   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 
+<!--angularjs 天氣預報-->
+  <script src="ionic.bundle.js"></script>
+  <script src="angular.min.js"></script>
+    
+  <script type="text/javascript">
+
+  var app=angular.module('starter',[]);
+  app.controller('controller', function ($scope, $http) {
+             $scope.show=false;
+            $scope.img_base_url = image_base_url;
+            
+            //$http.get("http://api.openweathermap.org/data/2.5/weather?q=London,uk")
+              $http.get("http://api.openweathermap.org/data/2.5/weather", {params: {"lat": 22.99,"lon": 120.21}})
+                   .then(function (resp) {
+                      $scope.weather = resp.data;
+                      $scope.show = true;
+                  }, function (err) {
+                      alert("Oops!");
+                  });
+              
+          });
+    var image_base_url = "http://openweathermap.org/img/w/"; // open weather api icon
+    </script>
+
+
   <!--呼叫TGOS MAP API (lite)-->
   <script type="text/javascript"
 
@@ -24,7 +49,8 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
     var BufferArea = null;
 
     //-----------------抓使用者位置---------------------------
-    function getLocation() {
+    function getLocation() 
+    {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(WGS84toTWD97);
         } else { 
@@ -44,7 +70,7 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
       startPoint = new TGOS.TGPoint(user_location_X, user_location_Y); //地標坐標位置
       pMap.setCenter(startPoint);   //初始地圖中心點
       var infotext = '<B>使用者現在大約位置</B><p>(可自行拖曳至實際位置)</p>';  //地標名稱及訊息視窗內容
-      var imgUrl = "star.gif";  //標記點圖示來源
+      var imgUrl = "picture/star.gif";  //標記點圖示來源
 
       //------------------建立標記點---------------------
       var markerImg = new TGOS.TGImage(imgUrl, new TGOS.TGSize(38, 33), new TGOS.TGPoint(0, 0), new TGOS.TGPoint(10, 33));       //設定標記點圖片及尺寸大小
@@ -62,7 +88,7 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
       TGOS.TGEvent.addListener(startMarker, "mouseout", closeInfoWindow);     //滑鼠監聽事件--關閉訊息視窗
     }
 
- //------------------初始化地圖--------------------
+    //------------------初始化地圖--------------------
     function InitWnd()
     {
       var pOMap = document.getElementById("OMap");
@@ -91,8 +117,9 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
     }
 
 
-//----------------繪製環域圖形-------------------
-    function searchArea() {
+    //----------------繪製環域圖形-------------------
+    function searchArea() 
+    {
       if(BufferArea)   //假設地圖上已存在環域圖形(TGFill), 則先行移除
         BufferArea.setMap(null);
 
@@ -112,21 +139,48 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
       pMap.fitBounds(BufferArea.getBounds());
       pMap.setZoom(pMap.getZoom()-1);     //取得環域圖形的邊界後, 調整地圖顯示的範圍
     }
+
+    //----------------放置醫院點-------------------
+    var hospital_Markers = new Array();  //新增一個陣列, 準備存放使用者新增的Marker
+    var hospital_MessageBox = new Array(); //新增一個陣列, 存醫院資訊
+    var hospital_location_X, hospital_location_Y;
+    function setMarker()
+    {
+      <?php include("hospital.php") ?>
+    }
+
+    function translate(loc_x, loc_y)
+    {
+      var Y84 = Number(loc_x);
+      var X84 = Number(loc_y);
+      var TT = new TGOS.TGTransformation();
+      TT.wgs84totwd97(X84,Y84);
+      hospital_location_X = Number(TT.transResult.x);
+      hospital_location_Y = Number(TT.transResult.y);
+    }
+    
+
+
+
+
+
   </script>
+
+  
 </head>
 
-<body style=" background: #000 url(background.jpg) center center fixed no-repeat; -moz-background-size:cover; background-size: 100% 100%;" 
-      onload="InitWnd(); getLocation();" >
+<body style=" background: #000 url(picture/background.jpg) center center fixed no-repeat; -moz-background-size:cover; background-size: 100% 100%;" 
+      onload="InitWnd(); getLocation();" ng-app="starter">
 
   <div id="container">
 
     <div id="header" style="width:40%;">
-     <img src="title.jpg" style="width:100%;">
+     <img src="picture/title.jpg" style="width:100%;">
     </div>
     </br>
 
     <div id="buttonZone">
-      <button type="button">Click Me! </button>
+      <input type="image" src="picture/hospital.gif" width=70% onclick="setMarker()"> 
       </br>
       <button type="button">Click Me! </button>
       </br>
@@ -140,10 +194,11 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
     <div id="OMap"></div>
 
     <div id="right">
+
       <div id="search">
         <form class="pure-form pure-form-stacked">
           <fieldset>
-            <legend style="font-size=125%;"><b>搜尋條件</b></legend>
+            <legend ><b>搜尋條件</b></legend>
               <label><b>搜尋半徑</b></label>
               <input id="BufferDist" style="height:4%; width:60%; margin: 0px auto;" placeholder="(公尺)">
               <br>
@@ -165,8 +220,33 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
           
       </div>
 
-      <div>
+      <div id="weather" ng-controller="controller" >
+        <div ng-show="show">
+            <div>
+                <h2>{{weather.name}}</h2>                
+            </div>
+            <div >
+                <img width="55" height="55" src="{{img_base_url + weather.weather[0].icon + '.png'}}">
+                <h3>{{weather.main['temp'] - 273.15| number:1}}°C</h3>
+            </div>
+            <div>
+                <div>
+                    <div>濕氣:
+                    {{weather.main.humidity}}%</div>
+                </div>
+                <div>
+                    <div>風速:
+                    {{weather.wind.speed}}mile/s</div>
+                </div>
+            <div>
+                    <div>氣壓:
+                    {{weather.main.pressure}}</div>
+                </div>
+            </div>
+            <h5>更新時間:{{(weather.dt)*1000 | date:'yyyy-MM-dd HH:mm:ss'}}</h5>
+        </div>         
       </div>
+
     </div>
   </div>
 </html>
