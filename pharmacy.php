@@ -8,7 +8,18 @@
         $result=mysql_query("SELECT * FROM `Tainan_pharmacy`");
         $all_pharmacy = mysql_num_rows($result); 
         echo "var nowPoint = new TGOS.TGPoint(startMarker.getPosition().x, startMarker.getPosition().y); ";
-        
+        echo "var url = \"picture/pharmacy.jpg\"; "; //取得圖示URL
+        echo "var size = new TGOS.TGSize(30, 30); "; //取得圖示大小
+        echo "var anchor = new TGOS.TGPoint(16, 33); ";  //取得錨點位移
+        echo 'var markerOptions = {
+                  flat:true,
+                  draggable:false
+                }; ';
+        echo 'var InfoWindowOptions = {
+                      maxWidth:4000, //訊息視窗的最大寬度 
+                      opacity:0.9, 
+                      pixelOffset: new TGOS.TGSize(5, -30) //InfoWindow起始位置的偏移量, 使用TGSize設定, 向右X為正, 向上Y為負  
+                }; ';
         for ($i = 0; $i < $all_pharmacy; $i++)
         {
           $row = mysql_fetch_assoc($result);
@@ -26,24 +37,12 @@
           echo "var howFar = s1.getLength(); ";
           echo "if(howFar <= 3000) { "; //篩選距離3公里內的藥局
 
-          echo "var url = \"picture/pharmacy.jpg\"; "; //取得圖示URL
-          echo "var size = new TGOS.TGSize(30, 30); "; //取得圖示大小
-          echo "var anchor = new TGOS.TGPoint(16, 33); ";  //取得錨點位移
           echo "var title = \" " . $row["name"] . "\"; "; //取得標記點標題
-          echo 'var markerOptions = {
-                  flat:true,
-                  draggable:false
-                }; ';
           echo "var icon = new TGOS.TGImage(url, size, new TGOS.TGPoint(0, 0), anchor); "; 
           echo "var marker = new TGOS.TGMarker(pMap, loc, title, icon, markerOptions); ";
           echo "pharmacy_Markers[" . $i . "] = marker; ";
           echo "totalMarker.push(marker); ";
 
-          echo 'var InfoWindowOptions = {
-                      maxWidth:4000, //訊息視窗的最大寬度 
-                      opacity:0.9, 
-                      pixelOffset: new TGOS.TGSize(5, -30) //InfoWindow起始位置的偏移量, 使用TGSize設定, 向右X為正, 向上Y為負  
-                }; ';
           echo "var tmpinfotext = '<h3><b>" . $row["name"] . "</b></h3><p>地址：" . $row["address1"] . $row["address2"] . $row["address3"] . "<br />電話：" . $row["phone"] . "</p>'; "; //地標名稱及訊息視窗內容
           echo "var tmpMessageBox = new TGOS.TGInfoWindow(tmpinfotext, marker, InfoWindowOptions); ";//訊息視窗出現位置 
           echo "tmpMessageBox.setPosition(loc); ";
@@ -56,6 +55,9 @@
                     pharmacy_MessageBox[' . $i . '].close(pMap);
                   }
                   pharmacy_MessageBox[' . $i . '].open(pMap);
+                }); '; //滑鼠監聽事件*/
+          echo 'TGOS.TGEvent.addListener(pharmacy_Markers[' . $i . '], "mouseout", function(){
+                  pharmacy_MessageBox[' . $i . '].close(pMap);
                 }); '; //滑鼠監聽事件*/
           echo "} ";
           echo "  }); ";
