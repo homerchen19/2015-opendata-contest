@@ -198,14 +198,27 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
         BufferArea.setMap(null);
     }
 
-
+    //-------------抓紫外線資料--------------------------
+    function parseUltraviolet()
+    {
+      <?php
+        $row = 1;
+        if (($handle = fopen("Ultraviolet.csv", "r")) !== FALSE) {
+          while (($data = fgetcsv($handle, 1000, ",")) !== FALSE && $row != 7) {
+            $row++;
+            echo "document.getElementById('Ultraviolet').innerHTML = \"" . $data[1] . "\"; "; 
+          }
+          fclose($handle);
+        }
+      ?>
+    }
 
   </script>
 
   
 </head>
 
-<body onload="InitWnd(); getLocation(); ">
+<body onload="InitWnd(); getLocation(); parseUltraviolet();">
 
   <div id="container">
     <div id="header" style="width:40%;">
@@ -218,7 +231,7 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
       </br>
       <input type="image" src="picture/pharmacy_button.png" width=70% onclick="setPharmacyMarker()"></button>
       </br>
-      <button type="button">Click Me! </button>
+      <button type="button" onclick="parseUltraviolet()">Click Me! </button>
       </br>
       <button type="button">Click Me! </button>
       </br>
@@ -280,8 +293,9 @@ src="http://api.tgos.nat.gov.tw/TGOS_API/tgos?ver=2&AppID=eEspyezvRdTOejpoc5n6vq
                 <div>
                     <p><b>風速</b>:{{weather.wind.speed}}mile/s</p>
                 </div>
-            <div>
-                    <p><b>氣壓</b>:{{weather.main.pressure}}</p>
+                <div>
+                    <b>紫外線指數</b>:
+                    <nobr id = "Ultraviolet"></nobr>
                 </div>
             </div>
             <h5>更新時間:{{(weather.dt)*1000 | date:'yyyy-MM-dd HH:mm:ss'}}</h5>
